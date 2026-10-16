@@ -49,3 +49,21 @@ jobs:
         with:
           persist-credentials: false
       - run: docker build --tag evidencedesk-verified .
+      - name: Execute protected container and persistent-volume smoke
+        env:
+          EVIDENCE_API_TOKEN: disposable-ci-workspace-token-not-a-secret
+        run: |
+          docker run --detach --name evidencedesk-smoke \
+            --publish 127.0.0.1:18011:8011 \
+            --env EVIDENCE_API_TOKEN --env EVIDENCE_MODE=bm25 \
+            --volume evidencedesk-ci-data:/app/data evidencedesk-verified
+          test "$(docker exec evidencedesk-smoke id -u)" = "10001"
+          python scripts/smoke_http.py http://127.0.0.1:18011 initial
+          docker restart evidencedesk-smoke
+          python scripts/smoke_http.py http://127.0.0.1:18011 restarted
+      - name: Retain logs and clean disposable resources
+        if: always()
+        run: |
+          docker logs evidencedesk-smoke || true
+          docker rm --force evidencedesk-smoke || true
+          docker volume rm evidencedesk-ci-data || true
