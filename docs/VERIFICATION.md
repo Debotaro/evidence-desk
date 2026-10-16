@@ -4,7 +4,7 @@ Executed 16 October 2026 on Windows AMD64 with Python 3.12.14, Node 24.13.0 and 
 
 | Check | Observed result |
 | --- | --- |
-| Editable package installation | Built and installed successfully from pyproject.toml |
+| Clean environment installation | Fresh repository-local venv installed from requirements.lock + pyproject.toml; all 46 tests passed again |
 | pytest API, persistence, security and fault cases | 46 passed; source/version/delete, contention, model failures, malicious/oversized requests and backup covered |
 | Ruff Python checks | Passed for application, tests and scripts |
 | Real CPU MiniLM evaluation | 30 total cases; aggregate metrics below use 26 holdout cases only |
