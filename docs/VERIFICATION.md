@@ -23,7 +23,7 @@ The final real-model report is `reports/evaluation.json`, generated at 2026-10-1
 | Mode | Expected source found among first 3 on 18 answerable cases | MRR | Refusals on 8 negative cases | Citation snapshot integrity | Warm query p50 / p95 |
 | --- | --- | --- | --- | --- | --- |
 | BM25 | 11/18, 61.11% | 0.6111 | 8/8 | 100% | 2.16 / 2.34 ms |
-| Dense MiniLM | 14/18, 77.78% | 0.7778 | 8/8 | 100% | 4.73 / 5.54 ms |
+| Dense MiniLM | 14/18, 77.78% | 0.7778 | 8/8 | 100% | 4.72 / 5.53 ms |
 | Hybrid | 14/18, 77.78% | 0.7778 | 8/8 | 100% | 4.83 / 5.70 ms |
 
 Check the JSON if regenerating: timings vary by machine/cache. The stored report is authoritative. The corpus, question set and 0.52 threshold were not changed to optimize these results. No generative LLM is present or evaluated. These are small synthetic fixtures, not an independent benchmark.
