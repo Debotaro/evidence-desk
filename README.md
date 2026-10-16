@@ -1,5 +1,7 @@
 # EvidenceDesk
 
+[![Verify EvidenceDesk](https://github.com/Debotaro/evidence-desk/actions/workflows/ci.yml/badge.svg)](https://github.com/Debotaro/evidence-desk/actions/workflows/ci.yml)
+
 Support answers should come with inspectable evidence. EvidenceDesk indexes text policies and runbooks, retrieves relevant passages with a real local sentence-transformer model and a BM25 baseline, and returns a source excerpt or an explicit refusal when evidence is weak.
 
 It is a complete single-workspace application with document revisions, optimistic concurrency, deletion, query history, a browser workbench, and a reproducible evaluation harness. Answers are **extractive source text**. There is no generative LLM, paid inference API or claim of customer adoption.
@@ -54,7 +56,7 @@ See [architecture](docs/ARCHITECTURE.md), [security boundaries](SECURITY.md), [d
 
 ## Deployment
 
-The repository contains a non-root Docker image, loopback-bound Compose configuration, health check and GitHub Actions workflow. Container configuration has been prepared; consult verification for whether Docker was actually executed. Public hosting is approval-gated. An Internet-facing installation requires HTTPS termination, a workspace token, an explicit allowed hostname, persistent storage, request limiting at the proxy and an owner who controls access.
+The repository contains a non-root Docker image, loopback-bound Compose configuration, health check and GitHub Actions workflow. Linux CI builds and executes the image, checks its UID, runs authenticated BM25 HTTP checks and verifies source/history persistence across a container restart. Real MiniLM inference is evaluated separately in native Linux CI. See [execution evidence](docs/VERIFICATION.md) for the exact run and limits. Public backend hosting is still incomplete. An Internet-facing installation requires HTTPS termination, a workspace token, an explicit allowed hostname, persistent storage, request limiting at the proxy and an owner who controls access.
 
 This is a bounded, single-workspace service: at most 100 documents and 2,000 chunks. There is no multi-tenant security model, distributed vector database, multi-node scheduler, legal policy authority, or production load claim. SQLite and in-process ranking intentionally keep this portfolio deployment understandable and inexpensive.
 

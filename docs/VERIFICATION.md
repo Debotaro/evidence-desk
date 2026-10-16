@@ -2,6 +2,14 @@
 
 Executed 16 October 2026 on Windows AMD64 with Python 3.12.14, Node 24.13.0 and two model inference threads. This is local execution evidence, not customer or production deployment evidence.
 
+## Public release verification
+
+The public source is available at [Debotaro/evidence-desk](https://github.com/Debotaro/evidence-desk). [GitHub Actions run 38913708995](https://github.com/Debotaro/evidence-desk/actions/runs/38913708995) passed on source commit `5982dc19dea39ea158d6bfc067f4766bca4fabf1` on 16 October 2026. It reran all 46 backend tests, the real CPU MiniLM evaluation and all 10 browser checks on Linux. The evaluation again found 11/18 answerable sources with BM25 and 14/18 with dense/hybrid, with 8/8 negative refusals per mode. Its downloadable artifact retains that execution's timings separately from the original Windows measurement below.
+
+The same run built the actual Docker image and started it as UID 10001 with a disposable named volume and an explicit workspace token. All 21 HTTP assertions passed: 12 on initial execution and 9 after a container restart. These exercise liveness, real authentication and host/origin enforcement, source ingestion, a lexical answer with an exact citation, response security policy, and source/query-history persistence. This container smoke deliberately uses BM25; semantic inference is separately exercised by native Linux CI. It does not prove public HTTPS hosting, workload capacity, backup recovery or production availability. No backend service is publicly hosted yet.
+
+## Original local acceptance
+
 | Check | Observed result |
 | --- | --- |
 | Clean environment installation | Fresh repository-local venv installed from requirements.lock + pyproject.toml; all 46 tests passed again |
@@ -14,7 +22,7 @@ Executed 16 October 2026 on Windows AMD64 with Python 3.12.14, Node 24.13.0 and 
 | Browser package npm audit | 0 reported vulnerabilities at this run; does not establish application or Python dependency security |
 | Local HTTP execution | Service started, health returned 200, fictional corpus ingested, semantic queries executed |
 | Backup | SQLite backup and integrity check passed; overwrite refusal regression passed |
-| Docker / hosted CI / public deployment | Configuration prepared; not executed here. Docker CLI absent; publishing requires approval |
+| Docker / hosted CI / public deployment | Docker CLI absent on the local Windows workstation. Later Linux CI built and executed the image as documented above; backend hosting remains incomplete |
 
 ## Actual retrieval measurement
 
@@ -38,4 +46,4 @@ Real API-backed checks exercise source retrieval/history, unsupported refusal, s
 
 ## Acceptance
 
-The bounded single-workspace application has passed its local engineering acceptance gate. README, architecture, security boundaries, evaluation methodology, operations/backup, dependency locks, license, CI and non-root container configuration are present. A local commit preserves this checkpoint before FlowLedger implementation begins. Public GitHub publication and hosting remain explicitly pending approval and deployment execution.
+The bounded single-workspace application passed its local engineering acceptance gate before FlowLedger implementation began. README, architecture, security boundaries, evaluation methodology, operations/backup, dependency locks, license, CI and non-root container configuration are present. Public source publication and Linux CI/container execution were subsequently verified as documented above. Persistent backend hosting and its live deployment checks remain incomplete.

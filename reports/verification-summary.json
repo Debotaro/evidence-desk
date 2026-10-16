@@ -10,8 +10,21 @@
   "browser_formatting": "passed",
   "browser_npm_audit_reported_vulnerabilities": 0,
   "real_model_evaluation": "evaluation.json",
-  "docker_executed": false,
-  "hosted_ci_executed": false,
-  "public_deployment": "pending_approval",
+  "docker_executed": true,
+  "hosted_ci_executed": true,
+  "public_source": "https://github.com/Debotaro/evidence-desk",
+  "public_deployment": "backend_not_hosted",
+  "hosted_verification": {
+    "head_sha": "5982dc19dea39ea158d6bfc067f4766bca4fabf1",
+    "run_url": "https://github.com/Debotaro/evidence-desk/actions/runs/38913708995",
+    "conclusion": "success",
+    "backend_tests_passed": 46,
+    "browser_tests_passed": 10,
+    "real_minilm_evaluation": "executed in native Linux CI; same holdout retrieval and refusal counts",
+    "container_image_build": "passed",
+    "container_runtime_user": 10001,
+    "container_http_checks_passed": 21,
+    "container_scope": "protected BM25 HTTP execution with named-volume source/history persistence across restart; semantic inference evaluated separately in native CI"
+  },
   "limitations": ["single shared workspace", "small synthetic evaluation", "extractive answers, no generative LLM", "individual proficiency not independently assessed"]
 }
