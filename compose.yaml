@@ -1,0 +1,11 @@
+services:
+  evidencedesk:
+    build: .
+    ports: ["127.0.0.1:8011:8011"]
+    environment:
+      EVIDENCE_API_TOKEN: ${EVIDENCE_API_TOKEN:?Set a random workspace token of at least 24 characters}
+      EVIDENCE_HOSTS: localhost,127.0.0.1
+    volumes: ["evidence-data:/app/data"]
+    restart: unless-stopped
+volumes:
+  evidence-data:

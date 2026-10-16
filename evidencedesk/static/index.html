@@ -1,0 +1,554 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light" />
+    <meta name="theme-color" content="#182624" />
+    <title>EvidenceDesk — answers with a paper trail</title>
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23182624'/%3E%3Cpath d='M10 9h13v3H13v3h8v3h-8v3h10v3H10z' fill='%23d7e8a1'/%3E%3C/svg%3E"
+    />
+    <link rel="stylesheet" href="/assets/style.css" />
+    <script defer src="/assets/app.js"></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <div class="app-shell">
+      <aside class="sidebar" aria-label="Workspace navigation">
+        <a class="brand" href="#workbench" aria-label="EvidenceDesk home"
+          ><span class="brand-mark" aria-hidden="true">E<span>·</span></span
+          ><span
+            >EvidenceDesk<span class="brand-caption"
+              >THE KNOWLEDGE WORKBENCH</span
+            ></span
+          ></a
+        >
+        <div class="workspace-label">
+          <span class="workspace-dot" aria-hidden="true"></span> Personal
+          workspace <span class="workspace-badge">LOCAL</span>
+        </div>
+        <nav class="navigation" aria-label="Main">
+          <a
+            href="#workbench"
+            data-view="workbench"
+            class="nav-link active"
+            aria-current="page"
+            ><svg aria-hidden="true" viewBox="0 0 24 24">
+              <path d="M4 5h16v11H9l-5 4V5Z" />
+              <path d="M8 9h8M8 12h5" /></svg
+            >Workbench<span class="nav-index">01</span></a
+          >
+          <a href="#knowledge" data-view="knowledge" class="nav-link"
+            ><svg aria-hidden="true" viewBox="0 0 24 24">
+              <path d="M5 4h10l4 4v12H5V4Z" />
+              <path d="M14 4v5h5M8 13h8M8 16h6" /></svg
+            >Knowledge<span id="nav-doc-count" class="nav-count">0</span></a
+          >
+          <a href="#quality" data-view="quality" class="nav-link"
+            ><svg aria-hidden="true" viewBox="0 0 24 24">
+              <path d="m12 3 8 4v5c0 4-4 7-8 9-4-2-8-5-8-9V7l8-4Z" />
+              <path d="m8 12 3 3 5-6" /></svg
+            >Quality<span class="nav-index">03</span></a
+          >
+        </nav>
+        <section class="sidebar-library" aria-labelledby="library-heading">
+          <div class="section-label" id="library-heading">
+            YOUR SOURCE LIBRARY
+          </div>
+          <div class="library-numbers">
+            <span><strong id="sidebar-doc-count">0</strong> documents</span
+            ><span><strong id="sidebar-chunk-count">0</strong> passages</span>
+          </div>
+          <div class="library-line" aria-hidden="true"></div>
+          <p>
+            Every answer starts here.<br />Only your indexed text is searched.
+          </p>
+          <button id="add-from-sidebar" class="button sidebar-button">
+            <span aria-hidden="true">+</span> Add a document
+          </button>
+        </section>
+        <div class="sidebar-bottom">
+          <div class="local-symbol" aria-hidden="true">↳</div>
+          <p>
+            Your sources. Your machine.<span
+              >No external API calls for search.</span
+            >
+          </p>
+        </div>
+      </aside>
+      <div class="workspace">
+        <header class="topbar">
+          <div class="breadcrumb">
+            Workspace <span aria-hidden="true">/</span>
+            <strong id="view-name">Workbench</strong>
+          </div>
+          <div class="connection-controls">
+            <span id="connection-state" class="connection-state"
+              ><span class="status-dot" aria-hidden="true"></span
+              ><span id="connection-label">Connecting</span></span
+            ><button id="connection-button" class="button button-quiet">
+              Connection<svg aria-hidden="true" viewBox="0 0 20 20">
+                <path d="m7 4 6 6-6 6" />
+              </svg>
+            </button>
+          </div>
+        </header>
+        <div
+          id="global-error"
+          class="global-message error-message"
+          role="alert"
+          hidden
+        ></div>
+        <div
+          id="global-notice"
+          class="global-message success-message"
+          role="status"
+          hidden
+        ></div>
+        <main id="main-content" tabindex="-1">
+          <section
+            id="view-workbench"
+            class="view-panel"
+            aria-labelledby="workbench-title"
+          >
+            <div class="page-heading">
+              <div>
+                <p class="eyebrow">
+                  <span aria-hidden="true"></span> EVIDENCE BEFORE ANSWERS
+                </p>
+                <h1 id="workbench-title">Answers with a paper trail.</h1>
+                <p class="page-description">
+                  Ask your knowledge base. See the original passages behind
+                  every answer.
+                </p>
+              </div>
+              <span class="edition-label">WORKBENCH / 01</span>
+            </div>
+            <div class="workbench-grid">
+              <div class="query-column">
+                <form id="query-form" class="question-card">
+                  <label for="question">What would you like to know?</label>
+                  <textarea
+                    id="question"
+                    name="question"
+                    rows="3"
+                    maxlength="2000"
+                    placeholder="Ask a specific question about your documents…"
+                    required
+                  ></textarea>
+                  <div class="question-controls">
+                    <div class="mode-control">
+                      <label for="search-mode">Search method</label
+                      ><select id="search-mode" name="mode">
+                        <option value="bm25">BM25 · keyword</option>
+                        <option value="hybrid">Hybrid · MiniLM + BM25</option>
+                        <option value="dense">MiniLM · semantic</option>
+                      </select>
+                    </div>
+                    <button
+                      id="query-submit"
+                      type="submit"
+                      class="button button-primary"
+                    >
+                      Find evidence <span aria-hidden="true">↗</span>
+                    </button>
+                  </div>
+                  <p class="form-footnote" id="method-note">
+                    BM25 searches matching terms. Answers quote source passages;
+                    no generative model is used.
+                  </p>
+                </form>
+                <div
+                  id="query-loading"
+                  class="loading-panel"
+                  role="status"
+                  hidden
+                >
+                  <span class="spinner" aria-hidden="true"></span>
+                  <div>
+                    <strong>Searching your sources</strong
+                    ><span>Retrieving passages and checking evidence.</span>
+                  </div>
+                </div>
+                <section
+                  id="answer-panel"
+                  class="answer-panel"
+                  aria-labelledby="answer-heading"
+                  hidden
+                >
+                  <div class="answer-topline">
+                    <div class="answer-label">
+                      <span class="answer-status-symbol" aria-hidden="true"
+                        >↳</span
+                      >
+                      <h2 id="answer-heading">Source-backed answer</h2>
+                    </div>
+                    <span id="answer-status" class="tag tag-green"
+                      >Evidence found</span
+                    >
+                  </div>
+                  <p id="answer-question" class="answer-question"></p>
+                  <div id="answer-text" class="answer-text"></div>
+                  <p id="answer-reason" class="answer-reason" hidden></p>
+                  <div class="answer-footer">
+                    <span id="answer-method"></span
+                    ><span id="answer-latency"></span>
+                  </div>
+                  <div class="sources-heading">
+                    <h3>
+                      Source passages
+                      <span id="citation-count" class="inline-count">0</span>
+                    </h3>
+                    <span>Open the evidence</span>
+                  </div>
+                  <div id="citation-list" class="citation-list"></div>
+                </section>
+                <section
+                  id="workbench-empty"
+                  class="start-panel"
+                  aria-labelledby="start-heading"
+                >
+                  <div class="empty-illustration" aria-hidden="true">
+                    <div class="paper paper-back"></div>
+                    <div class="paper paper-front">
+                      <span></span><span></span><span></span><b>“</b>
+                    </div>
+                    <div class="paper-check">↗</div>
+                  </div>
+                  <p class="eyebrow">A WORKSPACE FOR CHECKABLE ANSWERS</p>
+                  <h2 id="start-heading">Good answers leave a trail.</h2>
+                  <p id="start-description">
+                    Add a document to begin, or explore with five fictional
+                    merchant support policies.
+                  </p>
+                  <button id="seed-button" class="button button-secondary">
+                    Load fictional examples <span aria-hidden="true">↗</span>
+                  </button>
+                  <p class="empty-footnote">
+                    Synthetic sample policies. No customer or company data.
+                  </p>
+                </section>
+                <div class="principle-strip">
+                  <span
+                    ><span aria-hidden="true">↗</span> Traceable sources</span
+                  ><span
+                    ><span aria-hidden="true">◇</span> Honest abstention</span
+                  ><span
+                    ><span aria-hidden="true">⌘</span> Local retrieval</span
+                  >
+                </div>
+              </div>
+              <aside
+                class="context-column"
+                aria-label="Question history and help"
+              >
+                <section class="recent-section">
+                  <div class="section-heading">
+                    <h2>Recent questions</h2>
+                    <button id="clear-history" class="text-button" hidden>
+                      Clear
+                    </button>
+                  </div>
+                  <div id="history-list" class="history-list">
+                    <p class="muted empty-history">
+                      Your questions will appear here.<br />A record of what you
+                      checked.
+                    </p>
+                  </div>
+                </section>
+                <section id="starter-section" class="starter-section" hidden>
+                  <div class="section-label">TRY A QUESTION</div>
+                  <button
+                    class="starter-question"
+                    data-question="How long do customers have to request a refund?"
+                  >
+                    How long do customers have to request a refund?<span
+                      aria-hidden="true"
+                      >↗</span
+                    ></button
+                  ><button
+                    class="starter-question"
+                    data-question="What should I do if a shipment is delayed?"
+                  >
+                    What should I do if a shipment is delayed?<span
+                      aria-hidden="true"
+                      >↗</span
+                    >
+                  </button>
+                </section>
+                <section class="field-note">
+                  <span class="field-note-index">FIELD NOTE / 001</span>
+                  <h2>Evidence has limits.</h2>
+                  <p>
+                    If the library cannot support an answer, EvidenceDesk
+                    abstains. A retrieved passage is a source to inspect, not a
+                    guarantee of correctness.
+                  </p>
+                  <a href="#quality" class="note-link"
+                    >See how quality is checked
+                    <span aria-hidden="true">↗</span></a
+                  >
+                </section>
+              </aside>
+            </div>
+          </section>
+          <section
+            id="view-knowledge"
+            class="view-panel"
+            aria-labelledby="knowledge-title"
+            hidden
+          >
+            <div class="page-heading">
+              <div>
+                <p class="eyebrow">
+                  <span aria-hidden="true"></span> THE SOURCE OF TRUTH
+                </p>
+                <h1 id="knowledge-title">A library you can inspect.</h1>
+                <p class="page-description">
+                  Manage plain text and Markdown. Every edit creates a new
+                  document version.
+                </p>
+              </div>
+              <button id="add-document" class="button button-primary">
+                <span aria-hidden="true">+</span> Add document
+              </button>
+            </div>
+            <div class="knowledge-summary">
+              <span><strong id="knowledge-doc-count">0</strong> documents</span
+              ><span
+                ><strong id="knowledge-chunk-count">0</strong> indexed
+                passages</span
+              ><span class="privacy-note"
+                >Obvious emails and phone numbers are redacted on
+                ingestion.</span
+              >
+            </div>
+            <div class="knowledge-layout">
+              <section class="document-browser" aria-label="Document library">
+                <div class="document-browser-header">
+                  <label class="visually-hidden" for="document-filter"
+                    >Filter documents</label
+                  ><input
+                    id="document-filter"
+                    type="search"
+                    placeholder="Find a document…"
+                    autocomplete="off"
+                  /><span id="filter-count" class="muted"></span>
+                </div>
+                <div id="document-list" class="document-list"></div>
+              </section>
+              <section
+                id="document-inspector"
+                class="document-inspector"
+                aria-label="Document details"
+              >
+                <div class="inspector-empty">
+                  <span aria-hidden="true">↳</span>
+                  <h2>Know your sources.</h2>
+                  <p>
+                    Select a document to read its content, inspect its version,
+                    or make an edit.
+                  </p>
+                </div>
+              </section>
+            </div>
+          </section>
+          <section
+            id="view-quality"
+            class="view-panel"
+            aria-labelledby="quality-title"
+            hidden
+          >
+            <div class="page-heading">
+              <div>
+                <p class="eyebrow">
+                  <span aria-hidden="true"></span> MEASURE, THEN TRUST
+                </p>
+                <h1 id="quality-title">Quality, with the workings.</h1>
+                <p class="page-description">
+                  Compare retrieval methods on a reproducible, fictional
+                  support-policy dataset.
+                </p>
+              </div>
+              <button id="refresh-quality" class="button button-secondary">
+                Refresh report <span aria-hidden="true">↻</span>
+              </button>
+            </div>
+            <div class="quality-explainer">
+              <span class="quality-symbol" aria-hidden="true">↗</span>
+              <div>
+                <strong
+                  >Retrieval evaluation. No generative-model claims.</strong
+                >
+                <p>
+                  These are synthetic holdout cases. They measure source
+                  retrieval, citation integrity and abstention on this dataset,
+                  not performance on your documents or a public benchmark.
+                </p>
+              </div>
+            </div>
+            <div id="evaluation-report"></div>
+          </section>
+        </main>
+        <footer class="workspace-footer">
+          <span
+            >EvidenceDesk <span aria-hidden="true">/</span> Built for questions
+            worth checking.</span
+          ><span id="footer-engine">Local search workspace</span>
+        </footer>
+      </div>
+    </div>
+    <dialog
+      id="document-dialog"
+      class="modal"
+      aria-labelledby="document-dialog-title"
+    >
+      <form id="document-form">
+        <div class="modal-header">
+          <div>
+            <p class="eyebrow">GROW YOUR KNOWLEDGE BASE</p>
+            <h2 id="document-dialog-title">Add a document</h2>
+          </div>
+          <button
+            type="button"
+            class="icon-button close-dialog"
+            aria-label="Close document dialog"
+          >
+            ×
+          </button>
+        </div>
+        <div class="modal-body">
+          <label for="document-title">Document title</label
+          ><input
+            id="document-title"
+            maxlength="200"
+            required
+            placeholder="For example, Returns and refunds"
+          /><label for="document-content"
+            >Source content <span>Plain text or Markdown</span></label
+          ><textarea
+            id="document-content"
+            rows="11"
+            maxlength="50000"
+            required
+            placeholder="Paste the original source text here…"
+          ></textarea>
+          <div class="content-guidance">
+            <span
+              >Obvious email and phone patterns are redacted. Review source text
+              before adding sensitive information.</span
+            ><output id="content-length" for="document-content"
+              >0 / 50,000</output
+            >
+          </div>
+          <p
+            id="document-form-error"
+            class="form-error"
+            role="alert"
+            hidden
+          ></p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="button button-secondary close-dialog">
+            Cancel</button
+          ><button
+            id="save-document"
+            class="button button-primary"
+            type="submit"
+          >
+            Add to library <span aria-hidden="true">↗</span>
+          </button>
+        </div>
+      </form>
+    </dialog>
+    <dialog
+      id="connection-dialog"
+      class="modal modal-small"
+      aria-labelledby="connection-dialog-title"
+    >
+      <form id="connection-form">
+        <div class="modal-header">
+          <div>
+            <p class="eyebrow">WORKSPACE ACCESS</p>
+            <h2 id="connection-dialog-title">Connection settings</h2>
+          </div>
+          <button
+            type="button"
+            class="icon-button close-dialog"
+            aria-label="Close connection dialog"
+          >
+            ×
+          </button>
+        </div>
+        <div class="modal-body">
+          <p id="connection-description">
+            This local workspace may require an API token. A token stays in this
+            browser tab's session storage.
+          </p>
+          <label for="api-token"
+            >API token <span>Optional in local mode</span></label
+          ><input
+            id="api-token"
+            type="password"
+            autocomplete="off"
+            placeholder="Enter your workspace token"
+          />
+          <p class="form-footnote">
+            Only sent to this application's same-origin API. Closing the tab
+            ends the browser session.
+          </p>
+          <p id="connection-error" class="form-error" role="alert" hidden></p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="button button-secondary close-dialog">
+            Cancel</button
+          ><button
+            type="submit"
+            id="connect-submit"
+            class="button button-primary"
+          >
+            Save and connect
+          </button>
+        </div>
+      </form>
+    </dialog>
+    <dialog
+      id="confirm-dialog"
+      class="modal modal-small"
+      aria-labelledby="confirm-title"
+    >
+      <form id="confirm-form">
+        <div class="modal-header">
+          <h2 id="confirm-title">Confirm deletion</h2>
+          <button
+            type="button"
+            class="icon-button close-dialog"
+            aria-label="Close confirmation"
+          >
+            ×
+          </button>
+        </div>
+        <div class="modal-body"><p id="confirm-description"></p></div>
+        <div class="modal-footer">
+          <button type="button" class="button button-secondary close-dialog">
+            Cancel</button
+          ><button
+            type="submit"
+            id="confirm-submit"
+            class="button button-danger"
+          >
+            Delete
+          </button>
+        </div>
+      </form>
+    </dialog>
+    <div
+      id="live-status"
+      class="visually-hidden"
+      role="status"
+      aria-live="polite"
+    ></div>
+  </body>
+</html>
