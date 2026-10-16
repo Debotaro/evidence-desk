@@ -2,6 +2,19 @@
 
 ## Request flow
 
+```mermaid
+flowchart LR
+    A[Text source] --> B[Validate and redact]
+    B --> C[Bounded chunks]
+    C --> D[Local MiniLM embeddings]
+    D --> E[(Versioned SQLite sources and vectors)]
+    Q[Question] --> R[BM25 and cosine ranking]
+    E --> R
+    R --> G{Evidence threshold}
+    G -->|supported| S[Exact excerpt and versioned citation]
+    G -->|weak| X[Explicit abstention]
+```
+
 The browser sends same-origin JSON requests to FastAPI. Host, body-size, origin and optional bearer-token boundaries execute before the source or query workflow. Pydantic rejects unknown fields and bounds text. Source text is treated as data throughout; the client uses text nodes rather than HTML insertion.
 
 Ingestion checks source validity, redacts a limited set of contact patterns, splits paragraphs into bounded overlapping chunks, and computes normalized MiniLM vectors. A SQLite write transaction inserts the source and chunks together. Title uniqueness and version preconditions prevent concurrent duplicate or stale writes. If any chunk would exceed capacity, the transaction rolls back and leaves the old version intact.
