@@ -56,7 +56,13 @@ See [architecture](docs/ARCHITECTURE.md), [security boundaries](SECURITY.md), [d
 
 ## Deployment
 
-The repository contains a non-root Docker image, loopback-bound Compose configuration, health check and GitHub Actions workflow. Linux CI builds and executes the image, checks its UID, runs authenticated BM25 HTTP checks and verifies source/history persistence across a container restart. Real MiniLM inference is evaluated separately in native Linux CI. See [execution evidence](docs/VERIFICATION.md) for the exact run and limits. Public backend hosting is still incomplete. An Internet-facing installation requires HTTPS termination, a workspace token, an explicit allowed hostname, persistent storage, request limiting at the proxy and an owner who controls access.
+The repository contains a non-root Docker image, loopback-bound Compose configuration, health check and GitHub Actions workflow. Linux CI builds and executes the image, checks its UID, runs authenticated BM25 HTTP checks and verifies source/history persistence across a container restart. Real MiniLM inference is evaluated separately in native Linux CI. See [execution evidence](docs/VERIFICATION.md) for the exact run and limits.
+
+### Public edge edition
+
+The no-card public demo is live at **https://evidence-desk.debotaro-studio.workers.dev**. It serves the same static operator UI over HTTPS and persists fictional documents, extractive BM25 queries and query history in Cloudflare Durable Object SQLite. The edge edition is intentionally BM25-only: the Python service's local MiniLM/ONNX evaluation remains the reference measurement and is preserved in the repository.
+
+The public demo is unauthenticated and synthetic-data-only. It is suitable for recruiter review and bounded retrieval inspection; use the local Python service for the full token/origin controls, MiniLM inference, backup and native API test suite. Do not submit confidential data.
 
 This is a bounded, single-workspace service: at most 100 documents and 2,000 chunks. There is no multi-tenant security model, distributed vector database, multi-node scheduler, legal policy authority, or production load claim. SQLite and in-process ranking intentionally keep this portfolio deployment understandable and inexpensive.
 

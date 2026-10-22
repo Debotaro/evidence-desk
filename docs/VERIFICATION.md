@@ -46,4 +46,10 @@ Real API-backed checks exercise source retrieval/history, unsupported refusal, s
 
 ## Acceptance
 
-The bounded single-workspace application passed its local engineering acceptance gate before FlowLedger implementation began. README, architecture, security boundaries, evaluation methodology, operations/backup, dependency locks, license, CI and non-root container configuration are present. Public source publication and Linux CI/container execution were subsequently verified as documented above. Persistent backend hosting and its live deployment checks remain incomplete.
+The bounded single-workspace application passed its local engineering acceptance gate before FlowLedger implementation began. README, architecture, security boundaries, evaluation methodology, operations/backup, dependency locks, license, CI and non-root container configuration are present. Public source publication and Linux CI/container execution were subsequently verified as documented above.
+
+## Card-free public edge verification
+
+The bounded edge edition is live at [evidence-desk.debotaro-studio.workers.dev](https://evidence-desk.debotaro-studio.workers.dev). It was deployed with Wrangler to Cloudflare Workers Free using Durable Object SQLite and no billing setup. Public smoke checks verified HTTPS HTML delivery, health, synthetic corpus seeding, extractive BM25 retrieval with citations, query-history persistence and history deletion. The public runtime reports `mode: bm25` and does not claim the Python MiniLM/ONNX measurements as edge results.
+
+The public demo is unauthenticated and synthetic-data-only. The full Python service remains the reference implementation for authentication, origin enforcement, semantic inference, backup and the 46-case test suite.

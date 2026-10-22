@@ -10,6 +10,9 @@ reports/coverage.json
 reports/backend-tests.xml
 *.egg-info/
 node_modules/
+dist/
+edge-dist/
+.wrangler/
 playwright-report/
 test-results/
 .env
